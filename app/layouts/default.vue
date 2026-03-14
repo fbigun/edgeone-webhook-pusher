@@ -14,9 +14,11 @@
     >
       <!-- Logo -->
       <div class="flex items-center gap-3 px-4 py-5 border-b border-neutral-200/50 dark:border-neutral-800/50 min-h-[73px]">
-        <div class="w-10 h-10 rounded-2xl bg-gradient-to-br from-primary-500 via-primary-600 to-secondary-600 flex items-center justify-center shrink-0 shadow-lg shadow-primary-500/30 dark:shadow-primary-500/20">
-          <Icon icon="tabler:webhook" class="text-xl text-white" />
-        </div>
+        <img
+          src="/logo.png"
+          alt="EdgeOne Webhook Pusher"
+          class="w-10 h-10 rounded-2xl object-cover shrink-0 shadow-lg shadow-primary-500/20"
+        />
         <span v-if="!sidebarCollapsed" class="font-bold text-base text-neutral-900 dark:text-white tracking-tight">Webhook Pusher</span>
       </div>
 
@@ -109,6 +111,11 @@
         >
           <Icon icon="tabler:menu-2" class="text-xl text-neutral-900 dark:text-white" />
         </button>
+        <img
+          src="/logo.png"
+          alt="EdgeOne Webhook Pusher"
+          class="w-9 h-9 rounded-xl object-cover shrink-0 shadow-md shadow-primary-500/10"
+        />
         <span class="font-bold text-neutral-900 dark:text-white tracking-tight">{{ pageTitle }}</span>
       </header>
 

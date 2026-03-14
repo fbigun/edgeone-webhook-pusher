@@ -2,6 +2,22 @@
   <div class="bg-gradient-to-r from-primary-50 to-blue-50 dark:from-primary-900/20 dark:to-blue-900/20 border-b border-primary-100 dark:border-primary-800">
     <div class="px-4 md:px-6 lg:px-8 py-8">
       <div class="max-w-4xl mx-auto">
+        <div class="flex items-center gap-4 mb-5">
+          <img
+            src="/logo.png"
+            alt="EdgeOne Webhook Pusher"
+            class="w-16 h-16 md:w-20 md:h-20 rounded-3xl object-cover shadow-xl shadow-primary-500/15"
+          />
+          <div class="min-w-0">
+            <div class="text-xs font-semibold uppercase tracking-[0.28em] text-primary-600 dark:text-primary-400">
+              EdgeOne Webhook Pusher
+            </div>
+            <div class="text-sm text-gray-600 dark:text-gray-400 mt-1">
+              Webhook 驱动的边缘消息推送服务
+            </div>
+          </div>
+        </div>
+
         <!-- Title -->
         <h1 class="text-3xl md:text-4xl font-bold text-gray-900 dark:text-white mb-3">
           微信消息推送系统
