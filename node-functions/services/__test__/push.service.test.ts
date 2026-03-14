@@ -145,13 +145,13 @@ describe('PushService Integration Tests', () => {
       // 5. Mock 微信 API 响应（包括 KV 缓存）
       (global.fetch as any).mockImplementation((url: string) => {
         // Mock KV cache GET (返回 null 表示缓存未命中)
-        if (url.includes('/api/kv/config') && url.includes('action=get')) {
+        if (url.includes('/api/kv/new-kv') && url.includes('action=get')) {
           return Promise.resolve({
             json: () => Promise.resolve({ success: true, data: null }),
           });
         }
         // Mock KV cache PUT
-        else if (url.includes('/api/kv/config') && url.includes('action=put')) {
+        else if (url.includes('/api/kv/new-kv') && url.includes('action=put')) {
           return Promise.resolve({
             json: () => Promise.resolve({ success: true }),
           });
@@ -253,11 +253,11 @@ describe('PushService Integration Tests', () => {
       // 2. Mock 微信 API 响应（包括 KV 缓存）
       (global.fetch as any).mockImplementation((url: string) => {
         // Mock KV cache
-        if (url.includes('/api/kv/config') && url.includes('action=get')) {
+        if (url.includes('/api/kv/new-kv') && url.includes('action=get')) {
           return Promise.resolve({
             json: () => Promise.resolve({ success: true, data: null }),
           });
-        } else if (url.includes('/api/kv/config') && url.includes('action=put')) {
+        } else if (url.includes('/api/kv/new-kv') && url.includes('action=put')) {
           return Promise.resolve({
             json: () => Promise.resolve({ success: true }),
           });
@@ -335,11 +335,11 @@ describe('PushService Integration Tests', () => {
       // 3. Mock 企业微信 API 响应（包括 KV 缓存）
       (global.fetch as any).mockImplementation((url: string) => {
         // Mock KV cache
-        if (url.includes('/api/kv/config') && url.includes('action=get')) {
+        if (url.includes('/api/kv/new-kv') && url.includes('action=get')) {
           return Promise.resolve({
             json: () => Promise.resolve({ success: true, data: null }),
           });
-        } else if (url.includes('/api/kv/config') && url.includes('action=put')) {
+        } else if (url.includes('/api/kv/new-kv') && url.includes('action=put')) {
           return Promise.resolve({
             json: () => Promise.resolve({ success: true }),
           });
@@ -418,11 +418,11 @@ describe('PushService Integration Tests', () => {
       // 2. Mock 企业微信 API 响应（包括 KV 缓存）
       (global.fetch as any).mockImplementation((url: string) => {
         // Mock KV cache
-        if (url.includes('/api/kv/config') && url.includes('action=get')) {
+        if (url.includes('/api/kv/new-kv') && url.includes('action=get')) {
           return Promise.resolve({
             json: () => Promise.resolve({ success: true, data: null }),
           });
-        } else if (url.includes('/api/kv/config') && url.includes('action=put')) {
+        } else if (url.includes('/api/kv/new-kv') && url.includes('action=put')) {
           return Promise.resolve({
             json: () => Promise.resolve({ success: true }),
           });
@@ -500,11 +500,11 @@ describe('PushService Integration Tests', () => {
       // 2. Mock 企业微信 API 响应（包括 KV 缓存）
       (global.fetch as any).mockImplementation((url: string) => {
         // Mock KV cache
-        if (url.includes('/api/kv/config') && url.includes('action=get')) {
+        if (url.includes('/api/kv/new-kv') && url.includes('action=get')) {
           return Promise.resolve({
             json: () => Promise.resolve({ success: true, data: null }),
           });
-        } else if (url.includes('/api/kv/config') && url.includes('action=put')) {
+        } else if (url.includes('/api/kv/new-kv') && url.includes('action=put')) {
           return Promise.resolve({
             json: () => Promise.resolve({ success: true }),
           });
@@ -618,11 +618,11 @@ describe('PushService Integration Tests', () => {
       // 3. Mock API 响应（包括 KV 缓存）
       (global.fetch as any).mockImplementation((url: string) => {
         // Mock KV cache
-        if (url.includes('/api/kv/config') && url.includes('action=get')) {
+        if (url.includes('/api/kv/new-kv') && url.includes('action=get')) {
           return Promise.resolve({
             json: () => Promise.resolve({ success: true, data: null }),
           });
-        } else if (url.includes('/api/kv/config') && url.includes('action=put')) {
+        } else if (url.includes('/api/kv/new-kv') && url.includes('action=put')) {
           return Promise.resolve({
             json: () => Promise.resolve({ success: true }),
           });

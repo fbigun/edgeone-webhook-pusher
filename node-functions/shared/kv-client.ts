@@ -4,7 +4,7 @@
  * 
  * 架构说明：
  * Node Functions 无法直接访问 EdgeOne KV，需要通过 Edge Functions 代理
- * Edge Functions 位于 edge-functions/api/kv/ 目录
+ * Edge Functions 位于 edge-functions/api/kv/new-kv.js（统一入口 /api/kv/new-kv）
  * 
  * 安全说明：
  * 所有请求都需要携带 X-Internal-Key header 进行认证
@@ -181,15 +181,21 @@ function errorLog(message: string, details: any): void {
 }
 
 /**
- * Create a typed KV client for a specific namespace
+ * Create a typed KV client for a specific namespace prefix
  */
 function createKVClient<T = unknown>(namespace: string): KVOperations<T> {
+  const namespacePrefix = `${namespace}:`;
   const getCacheKey = (key: string): string => `${namespace}:${key}`;
+  const applyNamespacePrefix = (value: string): string =>
+    value.startsWith(namespacePrefix) ? value : `${namespacePrefix}${value}`;
+  const stripNamespacePrefix = (value: string): string =>
+    value.startsWith(namespacePrefix) ? value.slice(namespacePrefix.length) : value;
 
   return {
     async get<R = T>(key: string): Promise<R | null> {
       const context = asyncLocalStorage.getStore();
       const cacheKey = getCacheKey(key);
+      const namespacedKey = applyNamespacePrefix(key);
 
       // 请求级复用：命中后直接返回
       if (context?.getCache.has(cacheKey)) {
@@ -204,11 +210,12 @@ function createKVClient<T = unknown>(namespace: string): KVOperations<T> {
 
       const doFetch = async (): Promise<R | null> => {
         const baseUrl = getBaseUrl();
-        const url = `${baseUrl}/api/kv/${namespace}?action=get&key=${encodeURIComponent(key)}`;
+        const url = `${baseUrl}/api/kv/new-kv?action=get&key=${encodeURIComponent(namespacedKey)}`;
         
         debugLog('GET request:', {
           namespace,
           key,
+          namespacedKey,
           baseUrl,
           fullUrl: url,
           hasInternalKey: !!getInternalKey(),
@@ -277,15 +284,15 @@ function createKVClient<T = unknown>(namespace: string): KVOperations<T> {
       const baseUrl = getBaseUrl();
       const context = asyncLocalStorage.getStore();
       const cacheKey = getCacheKey(key);
-      const baseUrlWithNamespace = `${baseUrl}/api/kv/${namespace}`;
-      const url = `${baseUrlWithNamespace}?action=put`;
+      const namespacedKey = applyNamespacePrefix(key);
+      const url = `${baseUrl}/api/kv/new-kv?action=put`;
       const res = await fetch(url, {
         method: 'POST',
         headers: {
           'Content-Type': 'application/json',
           ...getAuthHeaders(),
         },
-        body: JSON.stringify({ key, value, ttl }),
+        body: JSON.stringify({ key: namespacedKey, value, ttl }),
       });
       const data = await parseKVResponse(res, url);
       if (!data.success) {
@@ -300,8 +307,9 @@ function createKVClient<T = unknown>(namespace: string): KVOperations<T> {
     async delete(key: string): Promise<void> {
       const context = asyncLocalStorage.getStore();
       const cacheKey = getCacheKey(key);
-      const baseUrl = `${getBaseUrl()}/api/kv/${namespace}`;
-      const url = `${baseUrl}?action=delete&key=${encodeURIComponent(key)}`;
+      const namespacedKey = applyNamespacePrefix(key);
+      const baseUrl = `${getBaseUrl()}/api/kv/new-kv`;
+      const url = `${baseUrl}?action=delete&key=${encodeURIComponent(namespacedKey)}`;
       const res = await fetch(url, {
         headers: getAuthHeaders(),
       });
@@ -316,10 +324,11 @@ function createKVClient<T = unknown>(namespace: string): KVOperations<T> {
     },
 
     async list(prefix = '', limit = 256, cursor?: string): Promise<KVListResult> {
-      const baseUrl = `${getBaseUrl()}/api/kv/${namespace}`;
+      const baseUrl = `${getBaseUrl()}/api/kv/new-kv`;
+      const namespacedPrefix = applyNamespacePrefix(prefix);
       const params = new URLSearchParams({
         action: 'list',
-        prefix,
+        prefix: namespacedPrefix,
         limit: String(limit),
       });
       if (cursor) {
@@ -334,7 +343,7 @@ function createKVClient<T = unknown>(namespace: string): KVOperations<T> {
         throw new Error(data.error || 'KV list failed');
       }
       return {
-        keys: data.keys || [],
+        keys: (data.keys || []).map(stripNamespacePrefix),
         complete: data.complete ?? true,
         cursor: data.cursor,
       };
