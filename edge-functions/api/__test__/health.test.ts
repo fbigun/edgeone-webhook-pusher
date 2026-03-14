@@ -11,14 +11,11 @@ function createKVBinding() {
 }
 
 function installBindings() {
-  (globalThis as any).CONFIG_KV = createKVBinding();
-  (globalThis as any).CHANNELS_KV = createKVBinding();
-  (globalThis as any).APPS_KV = createKVBinding();
-  (globalThis as any).OPENIDS_KV = createKVBinding();
-  (globalThis as any).MESSAGES_KV = createKVBinding();
+  (globalThis as any).PUSHER_KV = createKVBinding();
 }
 
 function cleanupBindings() {
+  delete (globalThis as any).PUSHER_KV;
   delete (globalThis as any).CONFIG_KV;
   delete (globalThis as any).CHANNELS_KV;
   delete (globalThis as any).APPS_KV;
@@ -34,6 +31,7 @@ describe('/api/health', () => {
 
   it('reports ready when env and KV bindings are healthy', async () => {
     installBindings();
+    (globalThis as any).PUSHER_KV.get.mockResolvedValue({ adminToken: 'AT_test' });
 
     const response = await onRequest({
       request: new Request('https://pusher-dev.ixnie.cn/api/health'),
@@ -50,8 +48,8 @@ describe('/api/health', () => {
     expect(json.ready).toBe(true);
     expect(json.summary.errorCount).toBe(0);
     expect(json.summary.warningCount).toBe(0);
-    expect(json.kv.bindings.CONFIG_KV.ok).toBe(true);
-    expect(json.kv.bindings.CHANNELS_KV.ok).toBe(true);
+    expect(json.kv.bindings.PUSHER_KV.ok).toBe(true);
+    expect(json.kv.systemConfig.initialized).toBe(true);
   });
 
   it('reports missing required envs clearly', async () => {
@@ -68,6 +66,8 @@ describe('/api/health', () => {
     expect(json.ready).toBe(false);
     expect(json.summary.errors).toContain('Missing required env: BUILD_KEY');
     expect(json.summary.errors).toContain('Missing required env: KV_BASE_URL');
-    expect(json.summary.warningCount).toBe(0);
+    expect(json.summary.warningCount).toBeGreaterThanOrEqual(1);
   });
+
+  // legacy KV detection moved to /api/health-migration
 });

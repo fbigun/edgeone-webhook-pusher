@@ -1,6 +1,6 @@
-// Edge Function: Config KV Operations
-// Path: /api/kv/config
-// KV Binding: CONFIG_KV (configured in EdgeOne Pages)
+// Edge Function: Unified KV Operations
+// Path: /api/kv/new-kv
+// KV Binding: PUSHER_KV (configured in EdgeOne Pages)
 
 function getConfiguredBuildKey(env) {
   const key = env?.BUILD_KEY;
@@ -21,7 +21,7 @@ function isValidKey(key, env) {
 }
 
 /**
- * Handle KV operations for application config
+ * Handle KV operations for unified namespace
  * @param {Object} context - EdgeOne EventContext
  * @param {Request} context.request - Client request object
  * @param {Object} context.params - Dynamic routing parameters
@@ -54,7 +54,7 @@ export async function onRequest(context) {
         if (!key) {
           return jsonResponse(400, { success: false, error: 'Missing key parameter' });
         }
-        const data = await CONFIG_KV.get(key, 'json');
+        const data = await PUSHER_KV.get(key, 'json');
         return jsonResponse(200, { success: true, data });
       }
 
@@ -70,7 +70,7 @@ export async function onRequest(context) {
           return jsonResponse(400, { success: false, error: 'Missing value in body' });
         }
         const options = body.ttl ? { expirationTtl: body.ttl } : {};
-        await CONFIG_KV.put(body.key, JSON.stringify(body.value), options);
+        await PUSHER_KV.put(body.key, JSON.stringify(body.value), options);
         return jsonResponse(200, { success: true });
       }
 
@@ -79,7 +79,7 @@ export async function onRequest(context) {
         if (!key) {
           return jsonResponse(400, { success: false, error: 'Missing key parameter' });
         }
-        await CONFIG_KV.delete(key);
+        await PUSHER_KV.delete(key);
         return jsonResponse(200, { success: true });
       }
 
@@ -92,7 +92,7 @@ export async function onRequest(context) {
         if (cursorParam && cursorParam.length > 0) {
           listOptions.cursor = cursorParam;
         }
-        const result = await CONFIG_KV.list(listOptions);
+        const result = await PUSHER_KV.list(listOptions);
         return jsonResponse(200, {
           success: true,
           keys: result.keys.map((k) => k.name || k.key),

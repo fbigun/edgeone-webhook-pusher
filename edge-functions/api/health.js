@@ -1,13 +1,7 @@
 // Edge Function: Health Check
 // Path: /api/health
 
-const REQUIRED_KV_BINDINGS = [
-  'CONFIG_KV',
-  'CHANNELS_KV',
-  'APPS_KV',
-  'OPENIDS_KV',
-  'MESSAGES_KV',
-];
+const REQUIRED_KV_BINDINGS = ['PUSHER_KV'];
 
 function normalizeEnvValue(value) {
   return typeof value === 'string' ? value.trim() : '';
@@ -23,16 +17,8 @@ function getConfiguredKvBaseUrl(env) {
 
 function getBinding(name) {
   switch (name) {
-    case 'CONFIG_KV':
-      return typeof CONFIG_KV !== 'undefined' ? CONFIG_KV : globalThis.CONFIG_KV;
-    case 'CHANNELS_KV':
-      return typeof CHANNELS_KV !== 'undefined' ? CHANNELS_KV : globalThis.CHANNELS_KV;
-    case 'APPS_KV':
-      return typeof APPS_KV !== 'undefined' ? APPS_KV : globalThis.APPS_KV;
-    case 'OPENIDS_KV':
-      return typeof OPENIDS_KV !== 'undefined' ? OPENIDS_KV : globalThis.OPENIDS_KV;
-    case 'MESSAGES_KV':
-      return typeof MESSAGES_KV !== 'undefined' ? MESSAGES_KV : globalThis.MESSAGES_KV;
+    case 'PUSHER_KV':
+      return typeof PUSHER_KV !== 'undefined' ? PUSHER_KV : globalThis.PUSHER_KV;
     default:
       return undefined;
   }
@@ -82,6 +68,27 @@ async function probeKVBinding(name) {
   }
 }
 
+async function probeSystemConfig(binding) {
+  if (!binding || typeof binding.get !== 'function') {
+    return {
+      initialized: false,
+      error: 'PUSHER_KV binding is missing',
+    };
+  }
+
+  try {
+    const config = await binding.get('config:config', 'json');
+    return {
+      initialized: Boolean(config),
+    };
+  } catch (error) {
+    return {
+      initialized: false,
+      error: error instanceof Error ? error.message : String(error),
+    };
+  }
+}
+
 function buildEnvChecks(env) {
   const buildKey = getConfiguredBuildKey(env);
   const kvBaseUrl = getConfiguredKvBaseUrl(env);
@@ -102,8 +109,9 @@ function buildEnvChecks(env) {
   };
 }
 
-function buildSummary(envChecks, kvChecks) {
+function buildSummary(envChecks, kvChecks, systemConfig) {
   const errors = [];
+  const warnings = [];
 
   if (!envChecks.BUILD_KEY.ok) {
     errors.push('Missing required env: BUILD_KEY');
@@ -120,16 +128,20 @@ function buildSummary(envChecks, kvChecks) {
     errors.push(`KV bindings failed: ${failedBindings.join(', ')}`);
   }
 
+  if (!systemConfig.initialized) {
+    warnings.push('系统配置未初始化');
+  }
+
   const healthy = errors.length === 0;
-  const ready = healthy;
+  const ready = healthy && systemConfig.initialized;
 
   return {
     healthy,
     ready,
     errorCount: errors.length,
-    warningCount: 0,
+    warningCount: warnings.length,
     errors,
-    warnings: [],
+    warnings,
   };
 }
 
@@ -156,7 +168,8 @@ export async function onRequest(context) {
     REQUIRED_KV_BINDINGS.map(async (name) => [name, await probeKVBinding(name)])
   );
   const kvChecks = Object.fromEntries(bindingEntries);
-  const summary = buildSummary(envChecks, kvChecks);
+  const systemConfig = await probeSystemConfig(getBinding('PUSHER_KV'));
+  const summary = buildSummary(envChecks, kvChecks, systemConfig);
 
   return jsonResponse(200, {
     success: true,
@@ -167,6 +180,7 @@ export async function onRequest(context) {
     env: envChecks,
     kv: {
       bindings: kvChecks,
+      systemConfig,
     },
   });
 }
