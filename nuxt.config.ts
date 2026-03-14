@@ -1,5 +1,22 @@
 // https://nuxt.com/docs/api/configuration/nuxt-config
 
+const kvBaseUrl = process.env.KV_BASE_URL?.replace(/\/+$/, '');
+
+const devProxy: Record<string, { target: string; changeOrigin: boolean; rewrite?: (path: string) => string }> = {
+  '/v1': {
+    target: 'http://localhost:3001',
+    changeOrigin: true,
+    rewrite: (path: string) => path.replace(/^\/v1/, ''),
+  },
+};
+
+if (kvBaseUrl) {
+  devProxy['/api'] = {
+    target: kvBaseUrl,
+    changeOrigin: true,
+  };
+}
+
 export default defineNuxtConfig({
   compatibilityDate: '2025-07-15',
   
@@ -19,13 +36,7 @@ export default defineNuxtConfig({
   // rewrite 去掉 /v1 前缀，因为 Node Functions 本地运行时路由不带 /v1
   vite: {
     server: {
-      proxy: {
-        '/v1': {
-          target: 'http://localhost:3001',
-          changeOrigin: true,
-          rewrite: (path: string) => path.replace(/^\/v1/, ''),
-        },
-      },
+      proxy: devProxy,
     },
   },
 

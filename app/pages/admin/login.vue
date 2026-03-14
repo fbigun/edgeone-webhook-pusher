@@ -1,244 +1,309 @@
 <template>
-  <div class="min-h-screen w-full flex items-center justify-center bg-[var(--bg-secondary)] p-6 relative overflow-hidden">
+  <div class="min-h-screen w-full bg-[var(--bg-secondary)] p-6 relative overflow-hidden">
     <!-- Animated background gradient -->
     <div class="absolute inset-0 bg-gradient-to-br from-primary-50 via-success-50 to-primary-50 dark:from-primary-950 dark:via-success-950 dark:to-primary-950 opacity-50"></div>
     <div class="absolute inset-0 bg-[radial-gradient(circle_at_30%_20%,rgba(59,130,246,0.1),transparent_50%)] dark:bg-[radial-gradient(circle_at_30%_20%,rgba(59,130,246,0.2),transparent_50%)]"></div>
     <div class="absolute inset-0 bg-[radial-gradient(circle_at_70%_80%,rgba(34,197,94,0.1),transparent_50%)] dark:bg-[radial-gradient(circle_at_70%_80%,rgba(34,197,94,0.2),transparent_50%)]"></div>
 
-    <div class="w-full max-w-md relative z-10 animate-scale-in">
-      <!-- Header -->
-      <div class="text-center mb-8">
-        <div class="w-14 h-14 mx-auto mb-5 bg-gradient-to-br from-primary-600 to-primary-700 rounded-2xl flex items-center justify-center shadow-lg shadow-primary-500/30 transform hover:scale-105 transition-transform duration-200">
-          <img src="/logo.png" alt="EdgeOne Webhook Pusher" class="h-9 w-9 object-contain" />
-        </div>
-        <h1 class="text-3xl font-bold text-[var(--text-primary)] mb-2 tracking-tight">Webhook Pusher</h1>
-        <p class="text-[var(--text-secondary)] text-sm">消息推送服务管理后台</p>
-      </div>
-
-      <!-- Loading State -->
-      <div v-if="checking" class="card-glass card-lg animate-fade-in">
-        <div class="text-center py-12">
-          <Icon icon="svg-spinners:ring-resize" class="text-5xl text-primary-600 mb-4" />
-          <p class="text-[var(--text-secondary)] text-sm font-medium">检查初始化状态...</p>
-        </div>
-      </div>
-
-      <!-- Init Mode -->
-      <div v-else-if="!isInitialized" class="card-glass card-lg animate-scale-in">
-        <!-- Before Init -->
-        <template v-if="!generatedToken">
-          <div class="text-center py-6">
-            <div class="w-14 h-14 mx-auto mb-5 bg-gradient-to-br from-primary-100 to-primary-50 dark:from-primary-900/30 dark:to-primary-900/10 rounded-2xl flex items-center justify-center shadow-lg">
-              <Icon icon="tabler:rocket" class="text-2xl icon-primary" />
+    <div class="relative z-10 mx-auto w-full max-w-6xl">
+      <div class="grid items-start gap-6 lg:grid-cols-[1.15fr_0.85fr]">
+        <div class="order-2 lg:order-1 space-y-6">
+          <div class="card-glass card-lg p-6 sm:p-8">
+            <div class="flex items-start justify-between gap-4">
+              <div class="flex items-center gap-4">
+                <img
+                  src="/logo.png"
+                  alt="EdgeOne Webhook Pusher"
+                  class="h-12 w-12 sm:h-14 sm:w-14 object-contain"
+                />
+                <div>
+                  <h1 class="text-2xl sm:text-3xl font-bold text-[var(--text-primary)] tracking-tight">Webhook Pusher</h1>
+                  <p class="text-[var(--text-secondary)] text-sm mt-1">消息推送服务管理后台</p>
+                </div>
+              </div>
+              <ThemeToggle />
             </div>
-            <h2 class="text-xl font-bold text-[var(--text-primary)] mb-2">首次使用</h2>
-            <p class="text-[var(--text-secondary)] text-sm mb-6 leading-relaxed">
-              系统尚未初始化，点击下方按钮生成管理令牌
-            </p>
 
-            <div class="mb-6 rounded-2xl border border-[var(--border-default)] bg-[var(--bg-primary)]/70 p-4 text-left">
-              <div class="flex items-start justify-between gap-3">
-                <div class="min-w-0 flex-1">
-                  <div class="flex items-center gap-2 text-sm font-semibold text-[var(--text-primary)]">
-                    <Icon icon="tabler:shield-check" class="text-base" />
-                    <span>部署检查与配置引导</span>
+            <div class="mt-6 grid gap-4 sm:grid-cols-2">
+              <div class="rounded-2xl border border-[var(--border-default)] bg-[var(--bg-primary)]/70 p-4">
+                <div class="flex items-center gap-2 text-sm font-semibold text-[var(--text-primary)]">
+                  <Icon icon="tabler:shield-lock" class="text-base" />
+                  <span>安全访问</span>
+                </div>
+                <p class="mt-2 text-xs leading-5 text-[var(--text-secondary)]">
+                  管理令牌仅保存在浏览器本地，访问后台前建议确认授权方式。
+                </p>
+              </div>
+              <div class="rounded-2xl border border-[var(--border-default)] bg-[var(--bg-primary)]/70 p-4">
+                <div class="flex items-center gap-2 text-sm font-semibold text-[var(--text-primary)]">
+                  <Icon icon="tabler:heartbeat" class="text-base" />
+                  <span>部署状态</span>
+                </div>
+                <div class="mt-2 flex flex-wrap items-center gap-2 text-xs">
+                  <template v-if="healthChecking">
+                    <span class="badge badge-xs badge-soft-neutral">检查中</span>
+                    <span class="text-[var(--text-muted)]">读取 /api/health ...</span>
+                  </template>
+                  <template v-else-if="healthData">
+                    <span
+                      class="badge badge-xs"
+                      :class="healthData.healthy ? 'badge-soft-success' : 'badge-soft-danger'"
+                    >
+                      {{ healthData.healthy ? '健康' : '异常' }}
+                    </span>
+                    <span
+                      class="badge badge-xs"
+                      :class="healthData.ready ? 'badge-soft-success' : 'badge-soft-warning'"
+                    >
+                      {{ healthData.ready ? '已就绪' : '未就绪' }}
+                    </span>
+                    <span class="text-[var(--text-muted)]">
+                      错误 {{ healthData.summary.errorCount }} · 警告 {{ healthData.summary.warningCount }}
+                    </span>
+                  </template>
+                  <template v-else>
+                    <span class="badge badge-xs badge-soft-neutral">未知</span>
+                    <span class="text-[var(--text-muted)]">暂未获取健康状态</span>
+                  </template>
+                </div>
+              </div>
+            </div>
+
+            <div class="mt-6 flex flex-wrap items-center gap-2 text-xs text-[var(--text-muted)]">
+              <span class="badge badge-xs badge-soft-neutral">环境 {{ healthEnvItems.length }}</span>
+              <span class="badge badge-xs badge-soft-neutral">KV {{ healthKvBindingItems.length }}</span>
+              <span class="text-[var(--text-muted)]">管理操作需要通过部署健康检查</span>
+            </div>
+          </div>
+
+          <AuthHealthCheckPanel
+            :health-data="healthData"
+            :health-checking="healthChecking"
+            :health-error="healthError"
+            :health-env-items="healthEnvItems"
+            :health-kv-binding-items="healthKvBindingItems"
+            :health-action-items="healthActionItems"
+            :get-tone-badge-class="getToneBadgeClass"
+            :get-tone-panel-class="getTonePanelClass"
+            :get-tone-text-class="getToneTextClass"
+            :get-tone-icon="getToneIcon"
+            @refresh="handleHealthRefresh"
+          />
+        </div>
+
+        <div class="order-1 lg:order-2">
+          <!-- Loading State -->
+          <div v-if="checking" class="card-glass card-lg animate-fade-in">
+            <div class="text-center py-12">
+              <Icon icon="svg-spinners:ring-resize" class="text-5xl text-primary-600 mb-4" />
+              <p class="text-[var(--text-secondary)] text-sm font-medium">检查初始化状态...</p>
+            </div>
+          </div>
+
+          <!-- Init Mode -->
+          <div v-else-if="!isInitialized" class="card-glass card-lg animate-scale-in">
+            <!-- Before Init -->
+            <template v-if="!generatedToken">
+              <div class="text-center py-6">
+                <div class="w-14 h-14 mx-auto mb-5 bg-gradient-to-br from-primary-100 to-primary-50 dark:from-primary-900/30 dark:to-primary-900/10 rounded-2xl flex items-center justify-center shadow-lg">
+                  <Icon icon="tabler:rocket" class="text-2xl icon-primary" />
+                </div>
+                <h2 class="text-xl font-bold text-[var(--text-primary)] mb-2">首次使用</h2>
+                <p class="text-[var(--text-secondary)] text-sm mb-6 leading-relaxed">
+                  系统尚未初始化，点击下方按钮生成管理令牌
+                </p>
+
+                <div class="mb-6 rounded-2xl border border-[var(--border-default)] bg-[var(--bg-primary)]/70 p-4 text-left">
+                  <div class="flex items-start justify-between gap-3">
+                    <div class="min-w-0 flex-1">
+                      <div class="flex items-center gap-2 text-sm font-semibold text-[var(--text-primary)]">
+                        <Icon icon="tabler:shield-check" class="text-base" />
+                        <span>部署检查与配置引导</span>
+                      </div>
+                      <p class="mt-1 text-xs leading-5 text-[var(--text-secondary)]">
+                        开始初始化前，先确认环境变量和 KV 绑定都已就绪。
+                      </p>
+                    </div>
+                    <span
+                      v-if="healthData"
+                      class="badge badge-xs shrink-0"
+                      :class="healthData.healthy ? 'badge-soft-success' : 'badge-soft-danger'"
+                    >
+                      {{ healthData.healthy ? '可初始化' : '需修复' }}
+                    </span>
                   </div>
-                  <p class="mt-1 text-xs leading-5 text-[var(--text-secondary)]">
-                    开始初始化前，先确认环境变量和 KV 绑定都已就绪。
-                  </p>
-                </div>
-                <span
-                  v-if="healthData"
-                  class="badge badge-xs shrink-0"
-                  :class="healthData.healthy ? 'badge-soft-success' : 'badge-soft-danger'"
-                >
-                  {{ healthData.healthy ? '可初始化' : '需修复' }}
-                </span>
-              </div>
 
-              <div v-if="healthChecking" class="mt-4 flex items-center gap-2 text-xs text-[var(--text-muted)]">
-                <Icon icon="svg-spinners:ring-resize" class="text-sm" />
-                <span>正在读取 /api/health ...</span>
-              </div>
+                  <div v-if="healthChecking" class="mt-4 flex items-center gap-2 text-xs text-[var(--text-muted)]">
+                    <Icon icon="svg-spinners:ring-resize" class="text-sm" />
+                    <span>正在读取 /api/health ...</span>
+                  </div>
 
-              <div v-else-if="healthError" class="alert alert-danger mt-4 text-xs">
-                <Icon icon="tabler:alert-circle" class="shrink-0 text-base" />
-                <span>{{ healthError }}</span>
-              </div>
+                  <div v-else-if="healthError" class="alert alert-danger mt-4 text-xs">
+                    <Icon icon="tabler:alert-circle" class="shrink-0 text-base" />
+                    <span>{{ healthError }}</span>
+                  </div>
 
-              <template v-else-if="healthData">
-                <div class="mt-4 flex flex-wrap items-center gap-2 text-xs">
-                  <span
-                    class="badge badge-xs"
-                    :class="healthData.healthy ? 'badge-soft-success' : 'badge-soft-danger'"
-                  >
-                    {{ healthData.healthy ? '部署检查通过' : '部署存在阻塞项' }}
-                  </span>
-                  <span
-                    class="badge badge-xs"
-                    :class="healthData.ready ? 'badge-soft-success' : 'badge-soft-warning'"
-                  >
-                    {{ healthData.ready ? '可初始化' : '未就绪' }}
-                  </span>
-                  <span class="text-[var(--text-muted)]">
-                    错误 {{ healthData.summary.errorCount }} · 警告 {{ healthData.summary.warningCount }}
-                  </span>
-                </div>
+                  <template v-else-if="healthData">
+                    <div class="mt-4 flex flex-wrap items-center gap-2 text-xs">
+                      <span
+                        class="badge badge-xs"
+                        :class="healthData.healthy ? 'badge-soft-success' : 'badge-soft-danger'"
+                      >
+                        {{ healthData.healthy ? '部署检查通过' : '部署存在阻塞项' }}
+                      </span>
+                      <span
+                        class="badge badge-xs"
+                        :class="healthData.ready ? 'badge-soft-success' : 'badge-soft-warning'"
+                      >
+                        {{ healthData.ready ? '可初始化' : '未就绪' }}
+                      </span>
+                      <span class="text-[var(--text-muted)]">
+                        错误 {{ healthData.summary.errorCount }} · 警告 {{ healthData.summary.warningCount }}
+                      </span>
+                    </div>
 
-                <div class="mt-4 space-y-2">
-                  <div
-                    v-for="item in healthActionItems"
-                    :key="item.key"
-                    :class="['rounded-xl border p-3', getTonePanelClass(item.tone)]"
-                  >
-                    <div class="flex items-start gap-3">
-                      <Icon
-                        :icon="getToneIcon(item.tone)"
-                        class="mt-0.5 shrink-0 text-base"
-                        :class="getToneTextClass(item.tone)"
-                      />
-                      <div class="min-w-0 flex-1">
-                        <div class="font-medium text-[var(--text-primary)]">{{ item.title }}</div>
-                        <p class="mt-1 text-xs leading-5 text-[var(--text-secondary)]">{{ item.description }}</p>
-                        <code
-                          v-if="item.code"
-                          class="mt-2 block overflow-x-auto rounded-lg border border-[var(--border-default)] bg-[var(--bg-secondary)] px-3 py-2 text-[11px] mono"
-                        >
-                          {{ item.code }}
-                        </code>
+                    <div class="mt-4 space-y-2">
+                      <div
+                        v-for="item in healthActionItems"
+                        :key="item.key"
+                        :class="['rounded-xl border p-3', getTonePanelClass(item.tone)]"
+                      >
+                        <div class="flex items-start gap-3">
+                          <Icon
+                            :icon="getToneIcon(item.tone)"
+                            class="mt-0.5 shrink-0 text-base"
+                            :class="getToneTextClass(item.tone)"
+                          />
+                          <div class="min-w-0 flex-1">
+                            <div class="font-medium text-[var(--text-primary)]">{{ item.title }}</div>
+                            <p class="mt-1 text-xs leading-5 text-[var(--text-secondary)]">{{ item.description }}</p>
+                            <code
+                              v-if="item.code"
+                              class="mt-2 block overflow-x-auto rounded-lg border border-[var(--border-default)] bg-[var(--bg-secondary)] px-3 py-2 text-[11px] mono"
+                            >
+                              {{ item.code }}
+                            </code>
+                          </div>
+                        </div>
                       </div>
                     </div>
+                  </template>
+
+                  <div v-else class="mt-4 text-xs text-[var(--text-muted)]">
+                    暂未获取到健康状态，仍可继续初始化，但建议先刷新健康检查确认配置。
                   </div>
                 </div>
-              </template>
 
-              <div v-else class="mt-4 text-xs text-[var(--text-muted)]">
-                暂未获取到健康状态，仍可继续初始化，但建议先刷新健康检查确认配置。
+                <button
+                  class="btn btn-lg btn-solid-primary w-full"
+                  :disabled="initializing || hasBlockingHealthIssues"
+                  @click="handleInit"
+                >
+                  <Icon v-if="initializing" icon="svg-spinners:ring-resize" />
+                  <Icon v-else icon="tabler:player-play" />
+                  开始初始化
+                </button>
+
+                <p v-if="hasBlockingHealthIssues && !healthChecking" class="mt-3 text-xs text-[var(--danger-600)]">
+                  当前部署检查存在阻塞项，请先完成上面的配置引导。
+                </p>
               </div>
-            </div>
+            </template>
 
-            <button
-              class="btn btn-lg btn-solid-primary w-full"
-              :disabled="initializing || hasBlockingHealthIssues"
-              @click="handleInit"
-            >
-              <Icon v-if="initializing" icon="svg-spinners:ring-resize" />
-              <Icon v-else icon="tabler:player-play" />
-              开始初始化
-            </button>
+            <!-- After Init - Show Token -->
+            <template v-else>
+              <div class="py-6">
+                <div class="text-center mb-6">
+                  <div class="w-14 h-14 mx-auto mb-5 bg-gradient-to-br from-success-100 to-success-50 dark:from-success-900/30 dark:to-success-900/10 rounded-2xl flex items-center justify-center shadow-lg shadow-success-500/20">
+                    <Icon icon="tabler:circle-check" class="text-2xl icon-success" />
+                  </div>
+                  <h2 class="text-xl font-bold text-[var(--text-primary)]">初始化成功</h2>
+                </div>
 
-            <p v-if="hasBlockingHealthIssues && !healthChecking" class="mt-3 text-xs text-[var(--danger-600)]">
-              当前部署检查存在阻塞项，请先完成上面的配置引导。
-            </p>
-          </div>
-        </template>
+                <div class="alert alert-warning mb-6">
+                  <Icon icon="tabler:alert-triangle" class="text-xl shrink-0 mt-0.5" />
+                  <span class="text-sm font-medium">请妥善保存管理令牌，丢失后无法找回！</span>
+                </div>
 
-        <!-- After Init - Show Token -->
-        <template v-else>
-          <div class="py-6">
-            <div class="text-center mb-6">
-              <div class="w-14 h-14 mx-auto mb-5 bg-gradient-to-br from-success-100 to-success-50 dark:from-success-900/30 dark:to-success-900/10 rounded-2xl flex items-center justify-center shadow-lg shadow-success-500/20">
-                <Icon icon="tabler:circle-check" class="text-2xl icon-success" />
+                <div class="space-y-4">
+                  <div>
+                    <label class="block text-sm font-semibold text-[var(--text-primary)] mb-2">管理令牌</label>
+                    <input
+                      :value="generatedToken"
+                      readonly
+                      class="input input-md mono"
+                    />
+                  </div>
+
+                  <button
+                    class="btn btn-md btn-outline-primary w-full"
+                    @click="copyToken"
+                  >
+                    <Icon icon="tabler:copy" />
+                    复制令牌
+                  </button>
+
+                  <button
+                    class="btn btn-lg btn-solid-success w-full"
+                    @click="confirmAndLogin"
+                  >
+                    <Icon icon="tabler:arrow-right" />
+                    进入管理后台
+                  </button>
+                </div>
               </div>
-              <h2 class="text-xl font-bold text-[var(--text-primary)]">初始化成功</h2>
-            </div>
-
-            <div class="alert alert-warning mb-6">
-              <Icon icon="tabler:alert-triangle" class="text-xl shrink-0 mt-0.5" />
-              <span class="text-sm font-medium">请妥善保存管理令牌，丢失后无法找回！</span>
-            </div>
-
-            <div class="space-y-4">
-              <div>
-                <label class="block text-sm font-semibold text-[var(--text-primary)] mb-2">管理令牌</label>
-                <input
-                  :value="generatedToken"
-                  readonly
-                  class="input input-md mono"
-                />
-              </div>
-
-              <button
-                class="btn btn-md btn-outline-primary w-full"
-                @click="copyToken"
-              >
-                <Icon icon="tabler:copy" />
-                复制令牌
-              </button>
-
-              <button
-                class="btn btn-lg btn-solid-success w-full"
-                @click="confirmAndLogin"
-              >
-                <Icon icon="tabler:arrow-right" />
-                进入管理后台
-              </button>
-            </div>
-          </div>
-        </template>
-      </div>
-
-      <!-- Login Mode -->
-      <div v-else class="card-glass card-lg animate-scale-in">
-        <div class="py-6">
-          <div class="text-center mb-6">
-            <h2 class="text-xl font-bold text-[var(--text-primary)]">管理员登录</h2>
-            <p class="text-[var(--text-secondary)] text-sm mt-1">输入管理令牌以访问后台</p>
+            </template>
           </div>
 
-          <form class="space-y-4" @submit.prevent="handleLogin">
-            <div v-if="loginBlockReason" class="alert alert-danger text-sm">
-              <Icon icon="tabler:alert-circle" class="shrink-0 text-lg" />
-              <span>{{ loginBlockReason }}</span>
-            </div>
-            <div>
-              <label class="block text-sm font-semibold text-[var(--text-primary)] mb-2">管理令牌</label>
-              <div class="relative">
-                <Icon icon="tabler:key" class="absolute left-3 top-1/2 -translate-y-1/2 text-[var(--text-muted)] text-lg" />
-                <input
-                  v-model="formData.token"
-                  type="password"
-                  placeholder="请输入管理令牌"
-                  :disabled="!canAttemptLogin"
-                  :class="[
-                    'input input-md pl-10',
-                    loginError ? 'input-error' : ''
-                  ]"
-                />
+          <!-- Login Mode -->
+          <div v-else class="card-glass card-lg animate-scale-in">
+            <div class="py-6">
+              <div class="text-center mb-6">
+                <h2 class="text-xl font-bold text-[var(--text-primary)]">管理员登录</h2>
+                <p class="text-[var(--text-secondary)] text-sm mt-1">输入管理令牌以访问后台</p>
               </div>
-            </div>
 
-            <div v-if="loginError" class="alert alert-danger text-sm">
-              <Icon icon="tabler:alert-circle" class="shrink-0 text-lg" />
-              <span>{{ loginError }}</span>
-            </div>
+              <form class="space-y-4" @submit.prevent="handleLogin">
+                <div v-if="loginBlockReason" class="alert alert-danger text-sm">
+                  <Icon icon="tabler:alert-circle" class="shrink-0 text-lg" />
+                  <span>{{ loginBlockReason }}</span>
+                </div>
+                <div>
+                  <label class="block text-sm font-semibold text-[var(--text-primary)] mb-2">管理令牌</label>
+                  <div class="relative">
+                    <Icon icon="tabler:key" class="absolute left-3 top-1/2 -translate-y-1/2 text-[var(--text-muted)] text-lg" />
+                    <input
+                      v-model="formData.token"
+                      type="password"
+                      placeholder="请输入管理令牌"
+                      :disabled="!canAttemptLogin"
+                      :class="[
+                        'input input-md pl-10',
+                        loginError ? 'input-error' : ''
+                      ]"
+                    />
+                  </div>
+                </div>
 
-            <button
-              type="submit"
-              class="btn btn-lg btn-solid-primary w-full"
-              :disabled="logging || !canAttemptLogin"
-            >
-              <Icon v-if="logging" icon="svg-spinners:ring-resize" />
-              <Icon v-else icon="tabler:login" />
-              登录
-            </button>
-          </form>
+                <div v-if="loginError" class="alert alert-danger text-sm">
+                  <Icon icon="tabler:alert-circle" class="shrink-0 text-lg" />
+                  <span>{{ loginError }}</span>
+                </div>
+
+                <button
+                  type="submit"
+                  class="btn btn-lg btn-solid-primary w-full"
+                  :disabled="logging || !canAttemptLogin"
+                >
+                  <Icon v-if="logging" icon="svg-spinners:ring-resize" />
+                  <Icon v-else icon="tabler:login" />
+                  登录
+                </button>
+              </form>
+            </div>
+          </div>
         </div>
       </div>
-
-      <AuthHealthCheckPanel
-        :health-data="healthData"
-        :health-checking="healthChecking"
-        :health-error="healthError"
-        :health-env-items="healthEnvItems"
-        :health-kv-binding-items="healthKvBindingItems"
-        :health-action-items="healthActionItems"
-        :get-tone-badge-class="getToneBadgeClass"
-        :get-tone-panel-class="getTonePanelClass"
-        :get-tone-text-class="getToneTextClass"
-        :get-tone-icon="getToneIcon"
-        @refresh="handleHealthRefresh"
-      />
 
       <LegacyMigrationModal
         :open="showLegacyMigrationModal"
@@ -276,6 +341,7 @@
   </div>
 </template>
 
+
 <script setup lang="ts">
 import { Icon } from '@iconify/vue';
 import { useAuthStore } from '~/stores/auth';
@@ -283,6 +349,7 @@ import { showToast } from '~/composables/useToast';
 import LegacyMigrationModal from '~/components/auth/LegacyMigrationModal.vue';
 import LegacyMigrationSuccessModal from '~/components/auth/LegacyMigrationSuccessModal.vue';
 import AuthHealthCheckPanel from '~/components/auth/AuthHealthCheckPanel.vue';
+import ThemeToggle from '~/components/common/ThemeToggle.vue';
 import type {
   HealthDisplayItem,
   HealthGuideItem,

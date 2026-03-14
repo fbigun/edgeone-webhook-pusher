@@ -11,9 +11,12 @@
 <script setup lang="ts">
 import { useAuthStore } from '~/stores/auth';
 
+const { init: initTheme } = useTheme();
+
 onMounted(() => {
   const auth = useAuthStore();
   auth.init();
+  initTheme();
 });
 </script>
 

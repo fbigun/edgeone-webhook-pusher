@@ -134,7 +134,7 @@ import { useAuthStore } from '~/stores/auth';
 const route = useRoute();
 const router = useRouter();
 const auth = useAuthStore();
-const { isDark, toggle, init } = useTheme();
+const { isDark, toggle } = useTheme();
 
 const sidebarCollapsed = ref(false);
 const mobileMenuOpen = ref(false);
@@ -172,8 +172,6 @@ function handleLogout() {
 }
 
 onMounted(() => {
-  init();
-  
   if (window.innerWidth < 1024) {
     sidebarCollapsed.value = true;
   }
