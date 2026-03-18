@@ -1,274 +1,421 @@
 <p align="center">
-  <img src="docs/imgs/logo.png" alt="EdgeOne Webhook Pusher" width="240" />
+  <img src="docs/imgs/logo.png" alt="EdgeOne MCP Pusher" width="240" />
 </p>
 
-<h1 align="center">EdgeOne Webhook Pusher</h1>
+<h1 align="center">EdgeOne MCP Pusher</h1>
 
-<p align="center">基于 EdgeOne 边缘能力的消息推送服务</p>
+<p align="center">基于 EdgeOne 的自托管免费微信推送与标准 MCP Server</p>
 
-> 🚀 **0成本自建微信推送** - 白嫖EdgeOne + 微信测试号，5分钟部署专属推送服务
+<p align="center">为 Agent、IDE 与 Webhook 工作流提供免费、自托管、可多应用管理的消息推送平台。</p>
 
-[![Deploy to EdgeOne](https://cdnstatic.tencentcs.com/edgeone/pages/deploy.svg)](https://edgeone.ai/pages/new?template=https://github.com/ixNieStudio/edgeone-webhook-pusher)
+> 🚀 **0 成本自建微信推送 + 标准 MCP Server** - 白嫖 EdgeOne + 微信测试号，5 分钟部署专属推送服务
 
-**🎯 在线体验**：[https://webhook-pusher.ixnie.cn/](https://webhook-pusher.ixnie.cn/) （仅供体验使用）
+[![Deploy to EdgeOne](https://cdnstatic.tencentcs.com/edgeone/pages/deploy.svg)](https://edgeone.ai/pages/new?template=https://github.com/ixNieStudio/edgeone-mcp-pusher)
 
----
-
-## 💡 为什么选它？
-
-| 对比项 | 本项目 | Server酱 | 认证公众号 |
-|--------|--------|----------|-----------|
-| � 成本 | **完全免费** | ¥49/年起 | 需认证费 |
-| 🔒 数据归属 | **自建自托管** | 第三方托管 | 腾讯托管 |
-| ⚡ 部署难度 | **5分钟一键部署** | 简单 | 复杂 |
-| 📊 推送限制 | **无限制** | 免费版有限 | 48小时限制 |
-| 🛠️ 自定义 | **完全可控** | 有限 | 有限 |
-
-**核心卖点**：EdgeOne免费额度 + 微信测试号 = 0成本永久使用 + 数据完全自己掌控
-
-> 由 [Tencent EdgeOne](https://edgeone.ai) 提供全球CDN加速
+**在线体验**：[https://webhook-pusher.ixnie.cn/](https://webhook-pusher.ixnie.cn/)  
+体验站仅供试用，生产环境建议自部署。
 
 ---
 
-## 📸 产品截图
+## 为什么选它？
+
+| 对比项 | EdgeOne MCP Pusher | Server 酱 | 认证公众号 |
+|--------|--------------------|-----------|------------|
+| 成本 | **完全免费** | ¥49/年起 | 需认证费 |
+| 数据归属 | **自建自托管** | 第三方托管 | 腾讯托管 |
+| 部署方式 | **EdgeOne 一键部署** | 平台现成 | 配置较重 |
+| 对 Agent / IDE 友好度 | **标准 MCP Server** | 不支持 | 不标准 |
+| 自定义能力 | **完全可控** | 有限 | 有限 |
+
+**核心卖点**：EdgeOne 免费额度 + 微信测试号 + 标准 MCP 接口 = 0 成本长期使用 + 数据自己掌控 + 可被 Agent / IDE 直接识别和调用
+
+> Powered by [Tencent EdgeOne](https://edgeone.ai)
+
+---
+
+## 产品截图
 
 <table>
   <tr>
     <td><img src="docs/imgs/wechat.jpg" alt="微信推送效果" /></td>
-    <td><img src="docs/imgs/2.%20home.png" alt="首页" /></td>
-    <td><img src="docs/imgs/3.%20channels.png" alt="渠道管理" /></td>
+    <td><img src="docs/imgs/admin-login.png" alt="管理台登录" /></td>
+    <td><img src="docs/imgs/apps-workspace.png" alt="应用目录与 Send URL" /></td>
   </tr>
   <tr>
     <td align="center">微信推送效果</td>
-    <td align="center">首页概览</td>
-    <td align="center">渠道管理</td>
+    <td align="center">管理台登录</td>
+    <td align="center">应用目录与 Send URL</td>
   </tr>
   <tr>
-    <td><img src="docs/imgs/4.%20apps.png" alt="应用管理" /></td>
-    <td><img src="docs/imgs/5.%20messages.png" alt="消息历史" /></td>
-    <td><img src="docs/imgs/1.%20login.png" alt="登录页面" /></td>
+    <td><img src="docs/imgs/app-editor-sheet.png" alt="应用编辑面板" /></td>
+    <td><img src="docs/imgs/messages-workspace.png" alt="消息历史与投递详情" /></td>
+    <td><img src="docs/imgs/mcp-guide-overview.png" alt="MCP 入口与标准工作流" /></td>
   </tr>
   <tr>
-    <td align="center">应用管理</td>
-    <td align="center">消息历史</td>
-    <td align="center">登录页面</td>
+    <td align="center">应用编辑面板</td>
+    <td align="center">消息历史与投递详情</td>
+    <td align="center">MCP 入口与标准工作流</td>
+  </tr>
+  <tr>
+    <td><img src="docs/imgs/mcp-guide-tools.png" alt="MCP 工具说明" /></td>
+    <td><img src="docs/imgs/mcp-client-configs.png" alt="MCP 客户端配置" /></td>
+    <td><img src="docs/imgs/settings-general.png" alt="全局设置与管理员令牌" /></td>
+  </tr>
+  <tr>
+    <td align="center">MCP 工具说明</td>
+    <td align="center">MCP 客户端配置</td>
+    <td align="center">全局设置与管理员令牌</td>
+  </tr>
+  <tr>
+    <td><img src="docs/imgs/settings-auth-profiles.png" alt="认证配置列表" /></td>
+    <td><img src="docs/imgs/settings-auth-profile-editor.png" alt="认证配置新建面板" /></td>
+    <td><img src="docs/imgs/settings-health.png" alt="部署健康与索引检查" /></td>
+  </tr>
+  <tr>
+    <td align="center">认证配置列表</td>
+    <td align="center">认证配置新建面板</td>
+    <td align="center">部署健康与索引检查</td>
   </tr>
 </table>
 
 ---
 
-## ✨ 核心功能
+## 核心功能
 
-- 🆓 **完全免费**：无推送次数/时间限制
-- ⚡ **极速部署**：EdgeOne一键部署，无需服务器
-- 📡 **Webhook调用**：一行代码/浏览器直接推送
-- 📱 **多渠道支持**：微信公众号、企业微信、钉钉、飞书
-- 🎛️ **可视化管理**：Web界面管理渠道/应用/历史
-- 🏠 **数据自托管**：部署在个人账号，安全可控
-- 🎁 **体验模式**：免登录试用全部功能
-- 🌍 **全球加速**：EdgeOne边缘节点低延迟
-
----
-
-## 🎯 适用场景
-
-**HomeLab/智能家居**：NAS下载通知、路由器监控、HomeAssistant告警、树莓派传感器  
-**开发运维**：CI/CD通知、服务器监控、Docker告警、错误提醒  
-**自动化工作流**：爬虫结果、签到脚本、RSS订阅、价格监控  
-**生活服务**：快递提醒、日程通知、设备上线
+- **自托管免费微信推送**：适合个人、NAS、Home Assistant、服务器告警
+- **标准 MCP Server**：可直接接入 Claude Code、Cursor、Codex、OpenCode 等 Agent / IDE
+- **Webhook 风格 API**：一行 `curl` 就能发消息
+- **多应用管理**：同一后台统一管理多个 appKey
+- **订阅群发**：适合公众号订阅、群组通知、多人接收
+- **多渠道能力**：微信公众号、企业微信、钉钉、飞书
+- **可视化后台**：创建应用、复制 appKey、测试发送、查看消息历史
+- **EdgeOne 一键部署**：无需单独买服务器
 
 ---
 
-## 🚀 快速开始
+## 适用场景
 
-### 方式1：在线体验
-访问 [https://webhook-pusher.ixnie.cn/](https://webhook-pusher.ixnie.cn/)，免部署体验全部功能
+- **HomeLab / 智能家居**：NAS 下载通知、Home Assistant 告警、路由器监控
+- **开发运维**：CI/CD 通知、服务器监控、Docker 异常、错误提醒
+- **自动化工作流**：RSS 订阅、价格监控、爬虫结果、签到脚本
+- **Agent / IDE 工作流**：已知 appKey 时直接发消息；需要让 AI 自己查 appKey 或读后台工具时再加 Bearer Token
 
-### 方式2：一键部署（5分钟）
+---
 
-1. 点击顶部「Deploy to EdgeOne」按钮，登录EdgeOne账号
-2. 绑定1个KV命名空间：`PUSHER_KV`
-3. 配置构建参数（Root: `/`，Output: `dist`，Build: `yarn build`）
-4. **⚠️ 重要：创建项目时就配置环境变量**
-   - `KV_BASE_URL=https://your-custom-domain.com`
-   - 如果使用 EdgeOne 默认域名，则设置为：`KV_BASE_URL=https://your-project.edgeone.cool`
-   - `BUILD_KEY=<复杂口令，建议至少 20 位，包含大小写、数字、符号>`
+## 快速开始
 
-**BUILD_KEY 设置建议：**
+### 1. 一键部署到 EdgeOne
 
-- 不要求 64 位十六进制
-- 系统运行时只要求它非空，且 Node Functions 与 Edge Functions 配置完全一致
-- 出于安全考虑，仍建议使用难猜的复杂口令
+1. 点击上方 **Deploy to EdgeOne**
+2. 创建并绑定 1 个 KV 命名空间：`PUSHER_KV`
+3. 设置构建参数：
+   - Root: `/`
+   - Output: `dist`
+   - Build: `yarn build`
+4. 配置环境变量：
 
-> 💡 **为什么需要配置 KV_BASE_URL？**  
-> EdgeOne Node Functions 需要通过 Edge Functions 访问 KV 存储。直接访问 `/send/*` 接口时，系统无法自动检测到公共域名，必须手动配置环境变量指定完整的域名地址。
-
-> 💡 **为什么必须配置 BUILD_KEY？**  
-> Node Functions 通过 `/api/kv/new-kv` 访问 Edge Functions 中转层，Edge Functions 会校验 `X-Internal-Key`。本项目已统一改为只使用环境变量，不再在构建时生成或注入内部密钥文件。为降低配置门槛，运行时不再限制必须是 64 位十六进制，只要求两端一致。
-
-### 环境变量说明
-
-| 变量名 | 必填 | 用途 |
+| 变量名 | 必填 | 说明 |
 |--------|------|------|
-| `KV_BASE_URL` | 是 | Node Functions 访问站点公开域名 |
-| `BUILD_KEY` | 是 | Node Functions 与 Edge Functions 共用的内部鉴权密钥 |
+| `KV_BASE_URL` | 是 | 站点完整域名，例如 `https://your-domain.com` |
+| `BUILD_KEY` | 是 | Node Functions 与 Edge Functions 共用的内部鉴权口令 |
 
-### 部署校验
+> `BUILD_KEY` 只要求两端一致，建议设置为难猜的复杂字符串。
 
-部署完成后，先检查健康接口：
+### 2. 初始化后台
+
+1. 打开 `https://your-domain.com/admin/login`
+2. 完成初始化，或使用已有管理员令牌登录
+3. 进入后台 `应用` 页创建第一个 app
+4. 在应用详情中复制 `AppKey` 和 `Send URL`
+
+> 管理员令牌主要用于后台和 MCP 管理只读工具，不影响普通 `/send/{appKey}` 调用。
+
+### 3. 发送第一条消息
 
 ```bash
-curl https://your-domain.com/api/health
+curl "https://your-domain.com/send/{appKey}?title=部署成功&desp=你的 EdgeOne MCP Pusher 已上线"
 ```
 
-正常情况下你应该看到：
+如果你更喜欢 JSON：
+
+```bash
+curl -X POST "https://your-domain.com/send/{appKey}" \
+  -H "Content-Type: application/json" \
+  -d '{"title":"部署成功","desp":"你的 EdgeOne MCP Pusher 已上线"}'
+```
+
+---
+
+## Webhook 使用教程
+
+### Send Endpoint
+
+- 发送地址：`https://your-domain.com/send/{appKey}`
+- `appKey` 来自后台应用详情
+- 同一个站点可以管理多个 app，每个 app 都有自己的 `appKey`
+
+### 常用参数
+
+| 参数 | 说明 |
+|------|------|
+| `title` | 必填，消息标题 |
+| `desp` | 简单正文，最常用 |
+| `content` | 扩展正文，复杂消息时使用 |
+| `format` | `text / markdown / html` |
+| `type` | `text / page`，`page` 会生成托管详情页 |
+| `url` | 可选跳转链接 |
+| `summary` | 可选摘要 |
+| `template` | 可选模板预设 key |
+
+### 最小示例
+
+```bash
+curl "https://your-domain.com/send/{appKey}?title=CPU告警&desp=CPU使用率超过90%"
+```
+
+### POST JSON 示例
+
+```bash
+curl -X POST "https://your-domain.com/send/{appKey}" \
+  -H "Content-Type: application/json" \
+  -d '{
+    "title": "构建完成",
+    "content": "# Build Success\n\n项目已经完成部署。",
+    "format": "markdown"
+  }'
+```
+
+### 网页详情页示例
+
+```bash
+curl -X POST "https://your-domain.com/send/{appKey}" \
+  -H "Content-Type: application/json" \
+  -d '{
+    "title": "生产告警",
+    "desp": "CPU 使用率超过 90%，请打开详情页查看上下文。",
+    "type": "page"
+  }'
+```
+
+> `GET` 适合轻量调用；复杂内容、长正文、Markdown / HTML 推荐用 `POST JSON`。
+
+---
+
+## MCP 使用教程
+
+### MCP Endpoint
+
+- `BASE_URL`：当前项目地址，例如 `https://your-domain.com`
+- MCP 入口：`<BASE_URL>/mcp`
+- 传输方式：`Streamable HTTP`
+- 适配方向：`Claude Code`、`Cursor`、`Codex`、`OpenCode` 以及其他支持远程 MCP 的 Agent / IDE
+- `/mcp` 是独立 MCP 入口，应直接走 Node Functions，不经过 Nuxt 页面路由
+
+### 权限模型
+
+```text
+Workflow:
+1. Set BASE_URL to your current project address, then use <BASE_URL>/mcp.
+2. If you already know appKey, call send_message directly. No bearer token is required.
+3. If you need apps_list, apps_get, message history, stats, or setup tools, reconnect with Authorization: Bearer <AT_...>.
+4. Copy appKey from the admin Apps page or from the existing /send/{appKey} URL.
+If sendType is "page", body is required.
+```
+
+匿名连接时，`tools/list` 只会看到：
+
+- `send_message`
+
+带管理员令牌后，才会额外看到：
+
+- `apps_list`
+- `apps_get`
+- `messages_list`
+- `messages_get`
+- `stats_get`
+- `setup_overview_get`
+
+管理员请求头：
+
+```text
+Authorization: Bearer <AT_...>
+```
+
+### 客户端配置示例
+
+#### Claude Code
+
+匿名发送：
+
+```bash
+export BASE_URL="https://your-domain.com"
+claude mcp add --transport http edgeone-mcp-pusher "$BASE_URL/mcp"
+```
+
+管理员模式：
+
+```bash
+export BASE_URL="https://your-domain.com"
+export EDGEONE_MCP_ADMIN_TOKEN="AT_xxx"
+claude mcp add --transport http edgeone-mcp-pusher-admin "$BASE_URL/mcp" \
+  --header "Authorization: Bearer $EDGEONE_MCP_ADMIN_TOKEN"
+```
+
+#### Codex
+
+匿名发送：
+
+```bash
+export BASE_URL="https://your-domain.com"
+codex mcp add edgeone-mcp-pusher --url "$BASE_URL/mcp"
+```
+
+管理员模式：
+
+```bash
+export BASE_URL="https://your-domain.com"
+export EDGEONE_MCP_ADMIN_TOKEN="AT_xxx"
+codex mcp add edgeone-mcp-pusher-admin \
+  --url "$BASE_URL/mcp" \
+  --bearer-token-env-var EDGEONE_MCP_ADMIN_TOKEN
+```
+
+#### Cursor
+
+匿名发送：
 
 ```json
 {
-  "success": true,
-  "healthy": true,
-  "ready": true,
-  "requestOrigin": "https://your-domain.com",
-  "hasBuildKeyEnv": true,
-  "summary": {
-    "errorCount": 0,
-    "warningCount": 0
-  },
-  "env": {
-    "BUILD_KEY": {
-      "present": true,
-      "ok": true
-    },
-    "KV_BASE_URL": {
-      "present": true,
-      "ok": true,
-      "matchesRequestOrigin": true
-    }
-  },
-  "kv": {
-    "systemConfig": {
-      "initialized": true
-    }
-  },
-  "routes": {
-    "kvProxy": {
-      "ok": true
-    },
-    "nodeInitStatus": {
-      "ok": true,
-      "initialized": true
+  "mcpServers": {
+    "edgeone-mcp-pusher": {
+      "url": "https://your-domain.com/mcp"
     }
   }
 }
 ```
 
-`/api/health` 现在会同时检查：
+管理员模式：
 
-- 必填环境变量是否齐全：`BUILD_KEY`、`KV_BASE_URL`
-- 1 个 KV 绑定是否存在且可读（`PUSHER_KV`）
-- `PUSHER_KV` 中的系统配置是否已初始化（`config:config`）
-- ` /api/kv/new-kv ` 代理路由是否正常
-- ` /v1/init/status ` Node Functions 端到端链路是否正常
-
-如需检查旧 KV 迁移状态，请调用：
-
-```bash
-curl https://your-domain.com/api/health-migration
+```json
+{
+  "mcpServers": {
+    "edgeone-mcp-pusher-admin": {
+      "url": "https://your-domain.com/mcp",
+      "headers": {
+        "Authorization": "Bearer ${env:EDGEONE_MCP_ADMIN_TOKEN}"
+      }
+    }
+  }
+}
 ```
 
-常见判定：
+#### OpenCode
 
-- `healthy=false`：说明部署配置或运行链路有硬错误，优先看 `summary.errors`
-- `ready=false` 且 `healthy=true`：通常说明系统还没初始化，例如 `config:config` 尚未写入 `PUSHER_KV`
-- `env.KV_BASE_URL.matchesRequestOrigin=false`：说明当前访问域名和配置的 `KV_BASE_URL` 不是同一个，适合作为诊断提示，不一定是故障
+匿名发送：
 
-### KV 迁移（从旧版升级）
-
-如果你的旧版本仍使用 5 个 KV 命名空间，请先部署当前版本（同时具备新旧 KV 代理），然后执行一次性迁移：
-
-```bash
-BUILD_KEY=Your-Strong-Passphrase KV_BASE_URL=https://your-domain.com \
-  curl -X POST "$KV_BASE_URL/api/kv/migrate" -H "X-Internal-Key: $BUILD_KEY"
+```json
+{
+  "mcp": {
+    "edgeone-mcp-pusher": {
+      "type": "remote",
+      "url": "https://your-domain.com/mcp",
+      "enabled": true
+    }
+  }
+}
 ```
 
-> 迁移只会同步最近 50 条消息历史，并重建对应索引。
+管理员模式：
 
-迁移完成后，可在 EdgeOne 控制台解绑旧的 KV 命名空间，仅保留 `PUSHER_KV`。
+```json
+{
+  "mcp": {
+    "edgeone-mcp-pusher-admin": {
+      "type": "remote",
+      "url": "https://your-domain.com/mcp",
+      "enabled": true,
+      "headers": {
+        "Authorization": "Bearer {env:EDGEONE_MCP_ADMIN_TOKEN}"
+      }
+    }
+  }
+}
+```
 
-### 使用流程
+### Tools 与权限
 
-#### 微信公众号/企业微信
+| Tool | 是否需要 Bearer | 说明 |
+|------|------------------|------|
+| `send_message` | 否 | 已知 `appKey` 时可直接发送 |
+| `apps_list` | 是 | 列出 app 与 `appKey` |
+| `apps_get` | 是 | 读取单个 app 的发送能力 |
+| `messages_list` | 是 | 读取消息列表 |
+| `messages_get` | 是 | 读取单条消息详情 |
+| `stats_get` | 是 | 读取系统统计 |
+| `setup_overview_get` | 是 | 读取初始化与索引概览 |
 
-1. **申请测试号**：访问 [微信测试号申请页](https://mp.weixin.qq.com/debug/cgi-bin/sandbox?t=sandbox/login)，扫码获取AppID/AppSecret
-2. **创建渠道**：填入测试号信息，配置服务器URL和Token
-3. **创建应用**：选择推送模式（单播/订阅）、消息类型，填入模板ID
-4. **绑定用户**：生成绑定码，微信扫码完成绑定
-5. **发送消息**：
-   ```bash
-   # GET请求
-   curl "https://your-domain.com/send/{appKey}?title=标题&desp=内容"
+### send_message 最小 payload
 
-   # POST请求
-   curl -X POST "https://your-domain.com/send/{appKey}" \
-     -H "Content-Type: application/json" \
-     -d '{"title":"标题","desp":"内容"}'
-   ```
+```json
+{
+  "appKey": "APKxxxxxxxxxxxxxxxxxxxxxxxxxxxxx",
+  "title": "Server Alert",
+  "body": "CPU usage exceeded 80%",
+  "sendType": "text"
+}
+```
 
-#### 钉钉群机器人
+字段说明：
 
-1. **创建机器人**：在钉钉群设置中添加自定义机器人，获取 Webhook URL
-2. **配置安全设置**（可选）：
-   - 加签方式：获取密钥（secret），系统自动生成 HMAC-SHA256 签名
-   - 关键词方式：设置关键词，消息中需包含关键词
-3. **创建渠道**：选择「钉钉」类型，填入 Webhook URL 和密钥（如有）
-4. **创建应用**：关联钉钉渠道，获取应用密钥（appKey）
-5. **发送消息**：
-   ```bash
-   # 基础推送
-   curl "https://your-domain.com/send/{appKey}?title=标题&desp=内容"
+- `appKey`：从后台「应用」页复制，或取现有 `/send/{appKey}` 的最后一段
+- `title`：必填
+- `body`：正文；`sendType=page` 时必填
+- `sendType`：`text` 或 `page`
+- `format`：可选 `text / markdown / html`
+- `linkUrl`：可选跳转链接
+- `summary`：可选摘要
+- `templateKey`：可选模板 key
 
-   # @指定成员（需在消息中传入 atMobiles）
-   curl -X POST "https://your-domain.com/send/{appKey}" \
-     -H "Content-Type: application/json" \
-     -d '{"title":"标题","desp":"内容","atMobiles":["13800138000"]}'
-   ```
+### 接入提示
 
-#### 飞书群机器人
+- 大多数远程 MCP 客户端会自动处理 `initialize`、`notifications/initialized` 与 `tools/list`
+- 你只需要保证 MCP 地址指向 `<BASE_URL>/mcp`
+- 如果只需要发送消息，可以不配 Bearer Token
+- 如果要让 Agent 自己发现 appKey 或读取后台信息，再补 `Authorization: Bearer <AT_...>`
 
-1. **创建机器人**：在飞书群设置中添加自定义机器人，获取 Webhook URL
-2. **配置签名验证**（可选）：启用签名验证，获取密钥（secret）
-3. **创建渠道**：选择「飞书」类型，填入 Webhook URL 和密钥（如有）
-4. **创建应用**：关联飞书渠道，获取应用密钥（appKey）
-5. **发送消息**：
-   ```bash
-   # 基础推送
-   curl "https://your-domain.com/send/{appKey}?title=标题&desp=内容"
+### 可选安全白名单
 
-   # POST请求
-   curl -X POST "https://your-domain.com/send/{appKey}" \
-     -H "Content-Type: application/json" \
-     -d '{"title":"标题","desp":"内容"}'
-   ```
+如果你希望限制 `/mcp` 的访问来源，可配置以下环境变量：
+
+| 变量名 | 说明 |
+|--------|------|
+| `MCP_ALLOWED_HOSTS` | 允许访问 `/mcp` 的 Host 白名单，逗号分隔，支持 `*.example.com` |
+| `MCP_ALLOWED_ORIGINS` | 允许跨域访问 `/mcp` 的 Origin 白名单，逗号分隔，支持 `https://*.example.com` |
+
+未配置时默认不限制生产 Host / Origin；本地开发仍只接受 loopback host。
 
 ---
 
-## 🔌 集成示例
+## 集成示例
 
-### 群晖NAS下载通知
+### 群晖 NAS 下载通知
+
 ```bash
 curl "https://your-domain.com/send/{appKey}?title=下载完成&desp=${TR_TORRENT_NAME}"
 ```
 
-### GitHub Actions部署通知
+### GitHub Actions 部署通知
+
 ```yaml
 - name: 部署通知
   run: curl "https://your-domain.com/send/${{ secrets.WEBHOOK_KEY }}?title=部署成功&desp=项目已上线"
 ```
 
-### Home Assistant告警
+### Home Assistant 告警
+
 ```yaml
 notify:
-  - name: webhook_pusher
+  - name: edgeone_mcp_pusher
     platform: rest
     resource: https://your-domain.com/send/{appKey}
     method: POST
@@ -278,6 +425,7 @@ notify:
 ```
 
 ### 服务器监控
+
 ```bash
 CPU_USAGE=$(top -bn1 | grep "Cpu(s)" | awk '{print $2}')
 [ ${CPU_USAGE%.*} -gt 80 ] && curl "https://your-domain.com/send/{appKey}?title=CPU告警&desp=使用率${CPU_USAGE}%"
@@ -285,79 +433,29 @@ CPU_USAGE=$(top -bn1 | grep "Cpu(s)" | awk '{print $2}')
 
 ---
 
-## 🔐 管理员密码自定义
+## 常见问题
 
-系统支持自定义管理员密码功能，让您可以设置易于记忆但符合安全要求的密码。
+**Q: 它和 Server 酱最大的区别是什么？**  
+A: 这是自托管方案，数据和 appKey 都在你自己的 EdgeOne 账号里，而且额外提供标准 MCP Server 给 Agent / IDE 使用。
 
-### 密码复杂度要求
+**Q: Webhook 和 MCP 有什么区别？**  
+A: Webhook 适合脚本和服务直接调用；MCP 适合让 Claude Code、Cursor、Codex 这类客户端通过标准协议调用 `send_message`，并在带管理员 Bearer Token 时继续使用 app/消息/统计工具。
 
-为确保系统安全，自定义密码必须满足以下要求：
+**Q: appKey 从哪里拿？**  
+A: 去后台「应用」页复制 AppKey，或者直接从现有 `https://your-domain.com/send/{appKey}` 里取最后一段。
 
-- ✅ **长度**：至少 12 个字符
-- ✅ **大写字母**：包含至少一个大写字母 (A-Z)
-- ✅ **小写字母**：包含至少一个小写字母 (a-z)
-- ✅ **数字**：包含至少一个数字 (0-9)
-- ✅ **特殊字符**：包含至少一个特殊字符 (!@#$%^&*()_+-=[]{}|;:,.<>?)
+**Q: 管理员令牌 AT_... 是做什么的？**  
+A: 主要用于后台登录，以及 MCP 的后台只读工具；普通 `/send/{appKey}` 调用不依赖它。
 
-**示例有效密码**：`MySecure@Pass123`、`Admin#2024Strong`
-
-### 使用方法
-
-1. **登录管理后台**：使用当前管理员令牌登录
-2. **进入设置页面**：点击右上角设置图标
-3. **重置密码**：
-   - 选择「自定义密码」选项
-   - 输入新密码（需满足复杂度要求）
-   - 再次输入确认密码
-   - 系统会实时显示密码强度和复杂度检查结果
-4. **确认重置**：点击「确认重置」按钮
-5. **重新登录**：使用新密码登录系统
-
-### 向后兼容性
-
-- 🔄 **自动生成模式**：如果不选择自定义密码，系统仍会自动生成安全的随机令牌（保持原有行为）
-- 🔒 **即时生效**：密码重置后，旧令牌立即失效，需使用新密码重新登录
-- 📱 **前端兼容**：旧版本前端仍可正常使用自动生成模式
-
-### 安全提示
-
-- ⚠️ **妥善保管**：请务必记住您的自定义密码，系统不提供密码找回功能
-- 🔐 **定期更换**：建议定期更换管理员密码以提高安全性
-- 🚫 **避免弱密码**：不要使用常见密码或个人信息作为密码
+**Q: EdgeOne 免费额度够用吗？**  
+A: 对个人通知、家庭告警、轻量自动化场景通常足够；如果流量和消息量持续增长，再考虑独立资源即可。
 
 ---
 
-## ❓ 常见问题
-
-**Q: 测试号有什么优势？**  
-A: 自定义模板、突破48小时限制、免审核，比正式号更灵活
-
-**Q: 单播和订阅的区别？**  
-A: 单播推给首个绑定用户（个人），订阅推给所有绑定用户（群组）
-
-**Q: EdgeOne免费额度够用吗？**  
-A: 每月100GB流量 + 100万次请求，个人使用完全够
-
-**Q: 忘记自定义密码怎么办？**  
-A: 需要通过 EdgeOne 控制台的 KV 存储直接修改配置，或重新部署项目
-
-**Q: 密码复杂度要求可以调整吗？**  
-A: 密码复杂度要求是为了保护系统安全而设定的，不建议降低要求
-
----
-
-## 🤝 参与贡献
-
-- 📝 提交Issue/PR：[GitHub Issues](https://github.com/ixNieStudio/edgeone-webhook-pusher/issues)
-- 💬 交流讨论：[GitHub Discussions](https://github.com/ixNieStudio/edgeone-webhook-pusher/discussions)
-- 🎁 分享案例：欢迎分享你的使用场景
-
----
-
-## 📄 开源协议
+## 开源协议
 
 GPL-3.0 License
 
 ---
 
-**关键词**：微信推送 | EdgeOne | Serverless | 数据自托管 | Server酱替代 | NAS通知 | 群晖 | 服务器监控 | CI/CD | HomeAssistant | 智能家居 | 免费推送
+**关键词**：EdgeOne | MCP | 自托管免费微信推送 | Agent | IDE | Webhook | WeChat push | multi-app | 订阅群发 | Claude Code | Cursor | Codex | OpenCode
